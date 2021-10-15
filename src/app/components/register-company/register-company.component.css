@@ -1,0 +1,23 @@
+button{
+    width: 70%;
+}
+input{
+    width: 40%;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+.spacer{
+  margin-right: 5px;
+}
+.alert-danger{
+  color: #721c24;
+  background: #f8d7da;
+  border-color: #f5c6cb;
+  margin-bottom: 5px;
+}
+.container-error-message{
+  padding: 3px;
+}

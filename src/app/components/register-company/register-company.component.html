@@ -1,0 +1,221 @@
+<div class="container mt-5">
+    <div class="card text-center" *ngIf="!IsvisibleForm else ShowRegisterForm">
+        <div class="card-header">
+            <h3>inscripción al Servicio</h3>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                Ingrese el NIT de la persona natural o jurídica que realizará el tramite, sin incluir el dígito de
+                verificación.
+                Luego seleccione <b>Continuar</b> para completar su solicitud
+            </p>
+            <input type="number" placeholder="NIT" id="NIT" #NIT (input)="WritecompanyIdentificationNumbre()"> <br>
+        </div>
+        <div class="card-footer text-muted">
+            <div class="row">
+                <div class="col col-6">
+                    <button [disabled]="IsDisableButton" class="btn btn-primary" (click)="CanRegister()">Continuar</button>
+                </div>
+                <div class="col col-6">
+                    <button class="btn btn-secondary">Regresar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #ShowRegisterForm>
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Datos de la persona natural o jurídica que solicita el servicio de trámite virtuales:</h3>
+            </div>
+            <div class="card-body">
+                <form [formGroup]="companyForm" (ngSubmit)="OnSaveCompany()">
+                    <input type="hidden" id="NITComplete" #NITComplete formControlName="companyIdentificationNumbre">
+                    <label for="basic-url" class="form-label">Naturaleza</label>
+                    <div class="input-group mb-3">
+                        <select formControlName="companyIdentificationId" class="form-control"
+                            (change)="onChange($event.target.value)">
+                            <option value='' disabled selected>Seleccione...</option>
+                            <option *ngFor="let identification of IdentificationsType" [value]="identification.id">
+                                {{ identification.identificationTypeName }}</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-5" [hidden]="!isLegalPerson">
+                        <label for="basic-url" class="form-label col-12">Nombre/Razón social</label>
+                        <input type="text" formControlName="companyName" class="form-control"
+                            placeholder="Nombre/Razón social" aria-label="Recipient's username"
+                            aria-describedby="basic-addon2">
+                        <div class="input-group alert-danger"
+                            *ngIf="companyName.invalid && (companyName.dirty || companyName.touched)">
+                            <div class="container-error-message" *ngIf="companyName.errors.required">
+                                La razón social es requerida
+                            </div>
+                            <div class="container-error-message" *ngIf="companyName.errors.minlength">
+                                La razón social debe contener 2 caracteres mínimo
+                            </div>
+                            <div class="container-error-message" *ngIf="companyName.errors.maxlength">
+                                La razón social debe contener 20 caracteres maximo
+                            </div>
+                        </div>
+                    </div>
+                    <!-- -->
+                    <div [hidden]="!isNotLegalPerson">
+                        <label for="basic-url" class="form-label">Primer Nombre</label>
+                        <div class="input-group mb-5">
+                            <input type="text" formControlName="firstName" class="form-control"
+                                placeholder="Primer Nombre" aria-label="Recipient's username"
+                                aria-describedby="basic-addon2">
+                            <div class="input-group alert-danger"
+                                *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)">
+                                <div class="container-error-message" *ngIf="firstName.errors.required">
+                                    El primer nombre es requerido
+                                </div>
+                                <div class="container-error-message" *ngIf="firstName.errors.minlength">
+                                    El nombre debe contener 2 caracteres mínimo
+                                </div>
+                                <div class="container-error-message" *ngIf="firstName.errors.maxlength">
+                                    El nombre debe contener 20 caracteres maximo
+                                </div>
+                            </div>
+                        </div>
+
+                        <label for="basic-url" class="form-label">Segundo Nombre</label>
+                        <div class="input-group mb-5">
+                            <input type="text" class="form-control" placeholder="Segundo Nombre"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        </div>
+
+                        <label for="basic-url" class="form-label">Primer Apellido</label>
+                        <div class="input-group mb-5">
+                            <input type="text" formControlName="firstLastName" class="form-control"
+                                placeholder="Primer Apellido" aria-label="Recipient's username"
+                                aria-describedby="basic-addon2">
+                            <div class="input-group alert-danger"
+                                *ngIf="firstLastName.invalid && (firstLastName.dirty || firstLastName.touched)">
+                                <div class="container-error-message" *ngIf="firstLastName.errors.required">
+                                    El primer apellido es requerido
+                                </div>
+                                <div class="container-error-message" *ngIf="firstLastName.errors.minlength">
+                                    El primer apellido debe contener 5 caracteres mínimo
+                                </div>
+                                <div class="container-error-message" *ngIf="firstLastName.errors.maxlength">
+                                    El primer apellido contener 20 caracteres maximo
+                                </div>
+                            </div>
+                        </div>
+
+                        <label for="basic-url" class="form-label">Segundo Apellido</label>
+                        <div class="input-group mb-5">
+                            <input type="text" class="form-control" placeholder="Segundo Apellido"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        </div>
+                    </div>
+                    <!-- -->
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Vía</span>
+                        <input type="text" class="form-control spacer" placeholder="Vía" aria-label="Username">
+                        <span class="input-group-text">Nro</span>
+                        <input type="number" class="form-control spacer" placeholder="Nro" aria-label="Server">
+
+                        <span class="input-group-text">Letra</span>
+                        <input type="text" class="form-control spacer" placeholder="Letra" aria-label="Username">
+                        <span class="input-group-text">Nro</span>
+                        <input type="number" class="form-control spacer" placeholder="Nro" aria-label="Server">
+
+                        <span class="input-group-text">Letra</span>
+                        <input type="text" class="form-control spacer" placeholder="Letra" aria-label="Username">
+                        <span class="input-group-text">Nro y complementos</span>
+                        <input type="text" class="form-control" placeholder="Nro y complementos" aria-label="Server">
+                    </div>
+
+                    <label for="basic-url" class="form-label">Dirección</label>
+                    <div class="input-group mb-3">
+                        <input type="text" formControlName="companyAddress" class="form-control" id="basic-url"
+                            aria-describedby="basic-addon3" placeholder="Dirección">
+                        <div class="input-group alert-danger"
+                            *ngIf="companyAddress.invalid && (companyAddress.dirty || companyAddress.touched)">
+                            <div class="container-error-message" *ngIf="companyAddress.errors.required">
+                                La dirección social es requerida
+                            </div>
+                            <div class="container-error-message" *ngIf="companyAddress.errors.minlength">
+                                La dirección social debe contener 5 caracteres mínimo
+                            </div>
+                            <div class="container-error-message" *ngIf="companyAddress.errors.maxlength">
+                                La dirrección social debe contener 20 caracteres maximo
+                            </div>
+                        </div>
+                    </div>
+
+                    <label for="basic-url" class="form-label">Municipio</label>
+                    <div class="input-group mb-3">
+                        <input type="text" formControlName="companyTown" class="form-control" id="basic-url"
+                            aria-describedby="basic-addon3" placeholder="Municipio">
+                        <div class="input-group alert-danger"
+                            *ngIf="companyTown.invalid && (companyTown.dirty || companyTown.touched)">
+                            <div class="container-error-message" *ngIf="companyTown.errors.required">
+                                El municipio es requerido
+                            </div>
+                            <div class="container-error-message" *ngIf="companyTown.errors.minlength">
+                                El municipio debe contener 5 caracteres mínimo
+                            </div>
+                            <div class="container-error-message" *ngIf="companyTown.errors.maxlength">
+                                El municipio debe contener 20 caracteres maximo
+                            </div>
+                        </div>
+                    </div>
+
+                    <label for="basic-url" class="form-label">Teléfono</label>
+                    <div class="input-group mb-3">
+                        <input type="text" formControlName="companyPhone" class="form-control" id="basic-url"
+                            aria-describedby="basic-addon3" placeholder="Teléfono">
+                        <div class="input-group alert-danger"
+                            *ngIf="companyPhone.invalid && (companyPhone.dirty || companyPhone.touched)">
+                            <div class="container-error-message" *ngIf="companyPhone.errors.required">
+                                El telefono es requerido
+                            </div>
+                            <div class="container-error-message" *ngIf="companyPhone.errors.minlength">
+                                El telefono debe contener 7 caracteres mínimo
+                            </div>
+                            <div class="container-error-message" *ngIf="companyPhone.errors.maxlength">
+                                El telefono debe contener 20 caracteres maximo
+                            </div>
+                        </div>
+                    </div>
+
+                    <label for="basic-url" class="form-label">Email</label>
+                    <div class="input-group mb-3">
+                        <input type="text" formControlName="companyEmail" class="form-control" id="basic-url"
+                            aria-describedby="basic-addon3" placeholder="Email">
+                        <div class="input-group alert-danger"
+                            *ngIf="companyEmail.invalid && (companyEmail.dirty || companyEmail.touched)">
+                            <div class="container-error-message" *ngIf="companyEmail.errors.required">
+                                El email es requerido
+                            </div>
+                            <div class="container-error-message" *ngIf="companyEmail.errors.minlength">
+                                El email debe contener 5 caracteres mínimo
+                            </div>
+                            <div class="container-error-message" *ngIf="companyEmail.errors.maxlength">
+                                El email debe contener 50 caracteres maximo
+                            </div>
+                            <div class="container-error-message" *ngIf="companyEmail.errors.email">
+                                El email no es válido
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <div class="row">
+                            <div class="col col-6">
+                                <button type="submit"
+                                    class="btn btn-primary">Continuar</button>
+                            </div>
+                            <div class="col col-6">
+                                <button type="reset" class="btn btn-secondary">Regresar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </ng-template>
+</div>
